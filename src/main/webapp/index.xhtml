@@ -1,0 +1,220 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Primefaces</title>
+        <link href="#{facesContext.externalContext.requestContextPath}/static/css/style.css" rel="stylesheet"/>
+    </h:head>
+    <h:body>
+        <p:growl id="notification"
+                 showDetail="true"
+                 showSummary="true"/>
+
+        <h1>Employees</h1>
+        <h:form id="employeesForm">
+            <p:inputText id="query" value="#{employeeCtrl.query}"/>
+            <p:watermark for="query" value="search..."/>
+
+            <p:selectOneMenu value="#{employeeCtrl.searchBy}">
+                <f:selectItem itemValue="name" itemLabel="name"/>
+                <f:selectItem itemValue="email" itemLabel="email"/>
+                <f:selectItem itemValue="phone" itemLabel="phone"/>
+                <f:selectItem itemValue="salary" itemLabel="salary"/>
+            </p:selectOneMenu>
+            <p:commandButton value="search"
+                             styleClass="green-button"
+                             actionListener="#{employeeCtrl.onSearch()}"
+                             update="@form"/>
+            <p:commandButton value="clear"
+                             styleClass="white-button"
+                             actionListener="#{employeeCtrl.onClear()}"
+                             update="@form"/>
+            <p:commandButton value="insert"
+                             styleClass="blue-button"
+                             type="button"
+                             onclick="PF('insertWidgetDialog').show()"/>
+            <p:dataTable value="#{employeeCtrl.employees}"
+                         rowIndexVar="counter"
+                         var="item">
+                <p:column headerText="no." style="width: 5%">
+                    #{counter + 1}
+                </p:column>
+                <p:column headerText="id">
+                    #{item.id}
+                </p:column>
+                <p:column headerText="firstname">
+                    #{item.firstName}
+                </p:column>
+                <p:column headerText="lastname">
+                    #{item.lastName}
+                </p:column>
+                <p:column headerText="email">
+                    #{item.email}
+                </p:column>
+                <p:column headerText="phone">
+                    #{item.phoneNumber}
+                </p:column>
+                <p:column headerText="salary">
+                    $#{item.salary}
+                </p:column>
+                <p:column headerText="#">
+                    <p:commandLink value="show"
+                                   update=":showDialogPanel"
+                                   oncomplete="PF('showWidgetDialog').show()"
+                                   actionListener="#{employeeCtrl.onSelect()}">
+                        <f:param name="employeeId" value="#{item.id}"/>
+                    </p:commandLink>
+                    <p:spacer width="5"/>
+                    <p:commandLink value="update"
+                                   update=":updateDialogForm"
+                                   onclick="PF('updateWidgetDialog').show()"
+                                   actionListener="#{employeeCtrl.onSelect()}">
+                        <f:param name="employeeId" value="#{item.id}"/>
+                    </p:commandLink>
+                    <p:spacer width="5"/>
+                    <p:commandLink value="delete"
+                                   update=":deleteDialogForm"
+                                   oncomplete="PF('deleteWidgetDialog').show()"
+                                   actionListener="#{employeeCtrl.onSelect()}">
+                        <f:param name="employeeId" value="#{item.id}"/>
+                    </p:commandLink>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+
+        <p:dialog id="showDialog"
+                  width="500"
+                  header="Show Employee"
+                  resizable="false"
+                  widgetVar="showWidgetDialog">
+            <p:outputPanel id="showDialogPanel">
+                <h:panelGrid columns="2">
+                    <h:outputText value="id :"/>
+                    <h:outputText value="#{employeeCtrl.employee.id}"/>
+
+                    <h:outputText value="firstname :"/>
+                    <h:outputText value="#{employeeCtrl.employee.firstName}"/>
+
+                    <h:outputText value="lastname :"/>
+                    <h:outputText value="#{employeeCtrl.employee.lastName}"/>
+
+                    <h:outputText value="email :"/>
+                    <h:outputText value="#{employeeCtrl.employee.email}"/>
+
+                    <h:outputText value="phone :"/>
+                    <h:outputText value="#{employeeCtrl.employee.phoneNumber}"/>
+
+                    <h:outputText value="salary :"/>
+                    <h:outputText value="$#{employeeCtrl.employee.salary}"/>
+                </h:panelGrid>
+            </p:outputPanel>
+        </p:dialog>
+        <p:dialog  id="updateDialog"
+                   width="500"
+                   header="update Employee"
+                   resizable="false"
+                   widgetVar="updateWidgetDialog">
+            <h:form id="updateDialogForm">
+                <h:panelGrid columns="2">
+                    First Name : <p:inputText value="#{employeeCtrl.employee.firstName}"/>
+                    Last Name  : <p:inputText value="#{employeeCtrl.employee.lastName}"/>
+                    Email      : <p:inputText value="#{employeeCtrl.employee.email}"/>
+                    Phone      : <p:inputText value="#{employeeCtrl.employee.phoneNumber}"/>
+                    Salary     : <p:inputText value="#{employeeCtrl.employee.salary}"/>
+
+                </h:panelGrid>
+                <p:commandButton value="update"
+                                 update=":notification, :employeesForm"
+                                 oncomplete="PF('updateWidgetDialog').hide()"
+                                 actionListener="#{employeeCtrl.onUpdate()}"
+                                 styleClass="red-button"/>
+                <p:commandButton value="cancel"
+                                 type="button"
+                                 oncomplete="PF('updateWidgetDialog').hide()"
+                                 styleClass="white-button"/>
+            </h:form>
+
+
+        </p:dialog>
+
+        <p:dialog id="deleteDialog"
+                  width="500"
+                  header="Delete Employee"
+                  resizable="false"
+                  widgetVar="deleteWidgetDialog">
+            <h:form id="deleteDialogForm"> 
+                #{employeeCtrl.employee.firstName} #{employeeCtrl.employee.lastName}
+                <br/>
+                <br/>
+                <p:commandButton value="delete"
+                                 update=":notification, :employeesForm"
+                                 actionListener="#{employeeCtrl.onDelete()}"
+                                 oncomplete="PF('deleteWidgetDialog').hide()"
+                                 styleClass="red-button"/>
+                <p:commandButton value="cancel"
+                                 type="button"
+                                 oncomplete="PF('deleteWidgetDialog').hide()"
+                                 styleClass="white-button"/>
+            </h:form>
+        </p:dialog>
+        <p:dialog  id="insertDialog"
+                   width="500"
+                   header="Insert Employee"
+                   resizable="false"
+                   widgetVar="insertWidgetDialog">
+            <h:form id="insertDialogForm">
+                <h:panelGrid columns="2">
+                    First Name : <p:inputText value="#{employeeCtrl.employee.firstName}"/>
+                    Last Name  : <p:inputText value="#{employeeCtrl.employee.lastName}"/>
+                    Email      : <p:inputText value="#{employeeCtrl.employee.email}"/>
+                    Phone      : <p:inputText value="#{employeeCtrl.employee.phoneNumber}"/>
+                    Job Id     : <p:inputText  value="#{employeeCtrl.employee.jobId}"/>
+                    Salary     : <p:inputText value="#{employeeCtrl.employee.salary}"/>                  
+                    MANAGER_ID :<p:inputText value="#{employeeCtrl.employee.managerId}"/>
+                    DEPARTMENT_ID :<p:inputText value="#{employeeCtrl.employee.departmentId}"/>
+
+                </h:panelGrid>
+                <br/>
+                <br/>
+                <p:commandButton value="insert"
+                                 update=":notification, :employeesForm"
+                                 oncomplete="PF('insertWidgetDialog').hide()"
+                                 actionListener="#{employeeCtrl.onInsert()}"
+                                 styleClass="red-button"/>
+                <p:commandButton value="cancel"
+                                 type="button"
+                                 oncomplete="PF('insertWidgetDialog').hide()"
+                                 styleClass="white-button"/>
+            </h:form>
+
+
+        </p:dialog>
+
+        <style>
+            body{
+                padding: 20px;
+            }
+
+            .ui-datatable{
+                margin-top: 20px;
+            }
+
+            .ui-button{
+                margin-right: 10px;
+            }
+
+            .ui-selectonemenu{
+                position: relative;
+                top : 10px;
+                margin-left: 10px;
+                margin-right: 10px;
+            }
+
+        </style>
+    </h:body>
+</html>
+
