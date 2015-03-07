@@ -80,7 +80,7 @@
                     <p:spacer width="5"/>
                     <p:commandLink value="delete"
                                    update=":deleteDialogForm"
-                                   oncomplete="PF('deleteWidgetDialog').show()"
+                                   onclick="PF('deleteWidgetDialog').show()"
                                    actionListener="#{employeeCtrl.onSelect()}">
                         <f:param name="employeeId" value="#{item.id}"/>
                     </p:commandLink>
