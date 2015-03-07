@@ -36,7 +36,9 @@
             <p:commandButton value="insert"
                              styleClass="blue-button"
                              type="button"
-                             onclick="PF('insertWidgetDialog').show()"/>
+                             onclick="PF('insertWidgetDialog').show()"
+                             actionListener="#{employeeCtrl.onInsert()}"/>
+                           
             <p:dataTable value="#{employeeCtrl.employees}"
                          rowIndexVar="counter"
                          var="item">
@@ -93,23 +95,33 @@
                   widgetVar="showWidgetDialog">
             <p:outputPanel id="showDialogPanel">
                 <h:panelGrid columns="2">
-                    <h:outputText value="id :"/>
+                    <h:outputText value="Id :"/>
                     <h:outputText value="#{employeeCtrl.employee.id}"/>
-
-                    <h:outputText value="firstname :"/>
+                    
+                    <h:outputText value="First Name :"/>
                     <h:outputText value="#{employeeCtrl.employee.firstName}"/>
 
-                    <h:outputText value="lastname :"/>
+                    <h:outputText value="Last Name :"/>
                     <h:outputText value="#{employeeCtrl.employee.lastName}"/>
 
-                    <h:outputText value="email :"/>
+                    <h:outputText value="Email :"/>
                     <h:outputText value="#{employeeCtrl.employee.email}"/>
 
-                    <h:outputText value="phone :"/>
+                    <h:outputText value="Phone :"/>
                     <h:outputText value="#{employeeCtrl.employee.phoneNumber}"/>
+                    
+                    <h:outputText value=" Job Id :"/>
+                    <h:outputText value="#{employeeCtrl.employee.jobId}"/>
 
-                    <h:outputText value="salary :"/>
+                    <h:outputText value="Salary :"/>
                     <h:outputText value="$#{employeeCtrl.employee.salary}"/>
+                    
+                    <h:outputText value=" Manager Id :"/>               
+                    <h:outputText value="#{employeeCtrl.employee.managerId}"/>
+                    
+                    <h:outputText value="Department Id :"/>
+                    <h:outputText value="#{employeeCtrl.employee.departmentId}"/>
+                    
                 </h:panelGrid>
             </p:outputPanel>
         </p:dialog>
@@ -127,15 +139,19 @@
                     Salary     : <p:inputText value="#{employeeCtrl.employee.salary}"/>
 
                 </h:panelGrid>
+                <br/>
+                <br/> 
                 <p:commandButton value="update"
                                  update=":notification, :employeesForm"
                                  oncomplete="PF('updateWidgetDialog').hide()"
                                  actionListener="#{employeeCtrl.onUpdate()}"
-                                 styleClass="red-button"/>
+                                 styleClass="green-button"/>
+                                
                 <p:commandButton value="cancel"
                                  type="button"
                                  oncomplete="PF('updateWidgetDialog').hide()"
                                  styleClass="white-button"/>
+
             </h:form>
 
 
@@ -159,6 +175,7 @@
                                  type="button"
                                  oncomplete="PF('deleteWidgetDialog').hide()"
                                  styleClass="white-button"/>
+                              
             </h:form>
         </p:dialog>
         <p:dialog  id="insertDialog"
@@ -174,8 +191,8 @@
                     Phone      : <p:inputText value="#{employeeCtrl.employee.phoneNumber}"/>
                     Job Id     : <p:inputText  value="#{employeeCtrl.employee.jobId}"/>
                     Salary     : <p:inputText value="#{employeeCtrl.employee.salary}"/>                  
-                    MANAGER_ID :<p:inputText value="#{employeeCtrl.employee.managerId}"/>
-                    DEPARTMENT_ID :<p:inputText value="#{employeeCtrl.employee.departmentId}"/>
+                    Manager_Id :<p:inputText value="#{employeeCtrl.employee.managerId}"/>
+                    Department_Id :<p:inputText value="#{employeeCtrl.employee.departmentId}"/>
 
                 </h:panelGrid>
                 <br/>
@@ -184,11 +201,12 @@
                                  update=":notification, :employeesForm"
                                  oncomplete="PF('insertWidgetDialog').hide()"
                                  actionListener="#{employeeCtrl.onInsert()}"
-                                 styleClass="red-button"/>
+                                 styleClass="blue-button"/>
                 <p:commandButton value="cancel"
                                  type="button"
                                  oncomplete="PF('insertWidgetDialog').hide()"
-                                 styleClass="white-button"/>
+                                 styleClass="white-button"
+                                 update="@form"/>
             </h:form>
 
 
